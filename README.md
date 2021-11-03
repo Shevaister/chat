@@ -5,22 +5,25 @@ Chat has authorization signin/signup, using jwt for security, has user search, f
 To download the project use "git clone https://github.com/Shevaister/chat"
 
 Project start and setup:
-    Start project for development:
-        Set up all .env files and nginx.conf.
 
-        Start all parts of server:
-        nginx: "start nginx"
-        go: "go run main.go"
-        vue: "npm run serve"
+Start project for development:
 
-    Start project:
-        You should delete all .env files except docker-compose.yml' .env file and delete go config loader "go/config" and delete its import in main.go. 
+Set up all .env files and nginx.conf.
 
-        To start project as docker network u need to build all images:
-        nginx: "docker build -t nginx ."
-        go: "docker build -t backend ."
-        vue: "docker build -t frontend ." 
+Start all parts of server:
+nginx: "start nginx"
+go: "go run main.go"
+vue: "npm run serve"
 
-        After image building u need to set up docker-compose.yml file.
+Start project:
 
-        After setuping you need to write "docker-compose up" in console, and chat starts after that.
+You should delete all .env files except docker-compose.yml' .env file and delete go config loader "go/config" and delete its import in main.go. 
+
+To start project as docker network u need to build all images:
+nginx: "docker build -t nginx ."
+go: "docker build -t backend ."
+vue: "docker build -t frontend ." 
+
+After image building u need to set up docker-compose.yml file.
+
+After setuping you need to write "docker-compose up" in console, and chat starts after that.
