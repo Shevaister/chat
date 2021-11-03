@@ -2,7 +2,7 @@ package social
 
 import (
 	"go/pkg/db/connection"
-	"go/pkg/models/social"
+	"go/pkg/repositories/social"
 )
 
 var Repository social.SocialRepository

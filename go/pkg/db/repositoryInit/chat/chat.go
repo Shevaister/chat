@@ -2,7 +2,7 @@ package chat
 
 import (
 	"go/pkg/db/connection"
-	"go/pkg/models/chat"
+	"go/pkg/repositories/chat"
 )
 
 var Repository chat.ChatRepository

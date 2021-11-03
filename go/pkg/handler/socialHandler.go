@@ -77,7 +77,7 @@ func GetFriends(c echo.Context) error {
 
 	for i := 0; i < len(friends); i++ {
 		res[i] = make(map[string]interface{})
-		res[i]["id"], res[i]["login"], _, err = user.Repository.FindUserById(friends[i].User2ID)
+		res[i]["id"], res[i]["login"], res[i]["avatar"], err = user.Repository.FindUserById(friends[i].User2ID)
 	}
 
 	if err != nil {

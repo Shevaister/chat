@@ -1,6 +1,8 @@
 package user
 
 import (
+	um "go/pkg/models/user" //um = userModel
+
 	"gorm.io/gorm"
 )
 
@@ -9,12 +11,12 @@ type UserRepository struct {
 }
 
 func ProvideUserRepostiory(DB *gorm.DB) UserRepository {
-	DB.AutoMigrate(&User{})
+	DB.AutoMigrate(&um.User{})
 	return UserRepository{DB: DB}
 }
 
 func (u *UserRepository) SignUp(login, password string) bool {
-	var user User
+	var user um.User
 	if u.DB.Where("login = ?", login).Take(&user).Error == nil {
 		return false
 	} else {
@@ -25,25 +27,26 @@ func (u *UserRepository) SignUp(login, password string) bool {
 	}
 }
 
-func (u *UserRepository) SignIn(login, password string) (int, error) {
-	var user User
-	err := u.DB.Where("login = ? AND password = ?", login, password).Take(&user).Error
-	return user.ID, err
+func (u *UserRepository) SignIn(login string) (int, string, error) {
+	var user um.User
+	err := u.DB.Where("login = ?", login).Take(&user).Error
+	return user.ID, user.Password, err
 }
 
-func (u *UserRepository) FindUser(login string) (int, string, error) {
-	var user User
-	err := u.DB.Where("login = ?", login).Take(&user).Error
-	return user.ID, user.Login, err
+// user search
+func (u *UserRepository) FindUser(login string) []um.User {
+	var user []um.User
+	u.DB.Where("login LIKE ? LIMIT 20", "%"+login+"%").Find(&user)
+	return user
 }
 
 func (u *UserRepository) ChangePassword(id int, password string) {
-	user := User{ID: id}
+	user := um.User{ID: id}
 	u.DB.Model(&user).Update("password", password)
 }
 
 func (u *UserRepository) ChangeLogin(id int, login string) bool {
-	var user User
+	var user um.User
 	if u.DB.Where("login = ?", login).Take(&user).Error == nil {
 		return false
 	}
@@ -53,16 +56,12 @@ func (u *UserRepository) ChangeLogin(id int, login string) bool {
 }
 
 func (u *UserRepository) ChangeAvatar(id int, avatar string) {
-	user := User{ID: id}
+	user := um.User{ID: id}
 	u.DB.Model(&user).Update("Avatar", avatar)
 }
 
 func (u *UserRepository) FindUserById(id int) (int, string, string, error) {
-	var user User
+	var user um.User
 	err := u.DB.Where("id = ?", id).Take(&user).Error
 	return user.ID, user.Login, user.Avatar, err
 }
-
-/*func (u *UserRepository) ChangeAvatar(login string) {
-
-}*/

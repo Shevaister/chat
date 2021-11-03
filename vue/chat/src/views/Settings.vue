@@ -10,30 +10,37 @@
 </template>
 
 <script>
+import {jwtCheck} from '@/utils/jwtCheck'
 import ChangeLogin from '@/components/settings/ChangeLogin'
 import ChangeAvatar from '@/components/settings/ChangeAvatar'
 import ChangePassword from '@/components/settings/ChangePassword'
 import Header from '@/components/Header'
-import router from '@/router'
 export default {
-    data() {
-        return {
-            jwt: localStorage.getItem('jwt'),
-        }
-    },
-
-    beforeMount() {
-        if (localStorage.getItem('jwt') == undefined) {
-            router.push('/') 
-        }
-    },
-
     components: {
         Header,
         ChangeLogin,
         ChangePassword,
         ChangeAvatar,
     },
+
+    data() {
+        return {
+            jwt: null
+        }
+    },
+
+    created() {
+        let jwt = jwtCheck(localStorage.getItem('jwt'))
+        if (!jwt) {
+            this.$router.push('/')
+        } else {
+            this.jwt = jwt
+        }
+    },
+
+    methods: {
+        jwtCheck,
+    }
 }
 </script>
 

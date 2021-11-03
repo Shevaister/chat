@@ -15,7 +15,16 @@ func SignUp(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	success := user.Repository.SignUp(request["login"].(string), request["password"].(string))
+
+	if len(request["password"].(string)) < 8 || len(request["login"].(string)) < 8 {
+		return c.JSON(http.StatusBadRequest, nil)
+	}
+
+	hashedPassword, err := authService.HashPassword(request["password"].(string))
+	if err != nil {
+		return err
+	}
+	success := user.Repository.SignUp(request["login"].(string), hashedPassword)
 	if !success {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
@@ -28,10 +37,25 @@ func SignIn(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	id, err := user.Repository.SignIn(request["login"].(string), request["password"].(string))
+
+	if len(request["password"].(string)) < 8 || len(request["login"].(string)) < 8 {
+		return c.JSON(http.StatusBadRequest, nil)
+	}
+
+	id, password, err := user.Repository.SignIn(request["login"].(string))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
+	success := authService.CheckPasswordHash(request["password"].(string), password)
+	if !success {
+		return c.JSON(http.StatusBadRequest, nil)
+	}
+
+	_, _, avatar, err := user.Repository.FindUserById(id)
+	if err != nil {
+		return err
+	}
+
 	t := authService.GenerateToken(id)
-	return c.JSON(http.StatusOK, t)
+	return c.JSON(http.StatusOK, map[string]string{"jwt": t, "avatar": avatar})
 }

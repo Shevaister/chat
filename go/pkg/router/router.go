@@ -19,7 +19,7 @@ func New() *echo.Echo {
 	e.POST("/signin", handler.SignIn)
 	e.POST("/signup", handler.SignUp)
 	e.Static("/", "../public")
-	e.GET("/ws/:Authorization", handler.Point)
+	e.GET("/ws/:Authorization", handler.Websocket)
 
 	r := e.Group("/a")
 	config := middleware.JWTConfig{

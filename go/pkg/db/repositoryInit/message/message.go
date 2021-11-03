@@ -2,7 +2,7 @@ package message
 
 import (
 	"go/pkg/db/connection"
-	"go/pkg/models/message"
+	"go/pkg/repositories/message"
 )
 
 var Repository message.MessageRepository

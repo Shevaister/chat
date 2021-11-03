@@ -23,6 +23,10 @@ func GetChat(c echo.Context) error {
 		return err
 	}
 
+	if user2_id == id {
+		return err
+	}
+
 	_, login, avatar, err := user.Repository.FindUserById(user2_id)
 	if err != nil {
 		return err
@@ -31,11 +35,9 @@ func GetChat(c echo.Context) error {
 	chatId := chat.Repository.GetChatID(id, user2_id)
 
 	messages := message.Repository.GetAllChatMessages(chatId)
-
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, nil)
 	}
-
 	return c.JSON(http.StatusOK, map[string]interface{}{"user": map[string]interface{}{"id": user2_id, "login": login, "avatar": avatar}, "chatId": chatId, "chat": messages})
 }
 

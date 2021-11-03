@@ -2,7 +2,7 @@ package user
 
 import (
 	"go/pkg/db/connection"
-	"go/pkg/models/user"
+	"go/pkg/repositories/user"
 )
 
 var Repository user.UserRepository

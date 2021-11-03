@@ -3,8 +3,7 @@
         <div class="form-group">
             <label for="exampleInputPassword1">Change password</label>
             <input
-                :value = "password"
-                @input = "password = $event.target.value"  
+                v-model="password" 
                 type="password" 
                 class="form-control" 
                 id="exampleInputPassword1" 
@@ -30,9 +29,12 @@ export default {
 
     methods: {
         async ChangePassword() {
+            if (this.password.length < 8){
+                alert("password must contain at least 8 characters")
+            } else {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:8000/a/changepassword',
+                url: process.env.VUE_APP_API_URL + "/a" + "/changepassword",
                 headers: {
                     Authorization: 'Bearer' + ' ' + this.jwt,
                 },
@@ -45,11 +47,10 @@ export default {
                     alert("error")
                 }
             })
-            console.log(response)
             if (response != undefined) {
                 this.password = ''
                 alert("success")
-            } 
+            }} 
         }
     }
 }

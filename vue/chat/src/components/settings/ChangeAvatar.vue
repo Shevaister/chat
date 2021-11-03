@@ -26,31 +26,12 @@ export default {
             const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: 'Bearer' + ' ' + this.jwt } };
             let fd = new FormData();
             fd.append('file', this.file)
-            const response = await axios.post("http://localhost:8000/a/changeavatar", fd, config)
+            const response = await axios.post(process.env.VUE_APP_API_URL + "/a" + "/changeavatar", fd, config)
             .catch(function (error) {
                 if (error.response) {
                     alert("error")
                 }
             })
-
-            /*const response = await axios({
-                method: 'post',
-                url: 'http://localhost:8000/a/changeavatar',
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: 'Bearer' + ' ' + this.jwt,
-                },
-                data: {
-                    file: this.file,
-                }
-            })
-            .catch(function (error) {
-                if (error.response) {
-                    alert("error")
-                }
-            })*/
-
-            console.log(response)
             if (response != undefined) {
                 alert("success")
             } 

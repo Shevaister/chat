@@ -1,7 +1,7 @@
 <template>
   <div class="chats-container">
     <div
-      @click="$parent.getChatMessages(chatPreview.senderId)"
+      @click="getChatMessages(chatPreview.senderId)"
       v-for="chatPreview in chatsPreview"
       :key="chatPreview.messageId"
       :class="[
@@ -9,17 +9,38 @@
         chatPreview.chatId == chatId ? 'active-chat' : 'standard-chat',
       ]"
     >
-      <img src="@/1.png" />
-      <p class="nick break">{{ chatPreview.senderLogin }}</p>
-      <br>
-      <span class="message break">{{ chatPreview.text }}</span>
-      <span class="time break">{{ chatPreview.time }}</span>
+        <div v-if="chatPreview.senderAvatar != ''">
+          <img :src= "photosURL + chatPreview.senderAvatar" />
+        </div>
+        <div v-else>
+          <img src= "@/assets/default.png" />
+        </div>
+        <span v-if="chatPreview.senderLogin.length<14">
+          <p class="nick break">{{ chatPreview.senderLogin }}</p>
+        </span>
+        <span v-else>
+          <p class="nick break">{{ chatPreview.senderLogin.substring(0,14)+".." }}</p>
+        </span>
+        <br>
+        <span v-if="chatPreview.text.length<8">
+          <span class="message break">{{ chatPreview.text }}</span>
+        </span>
+        <span v-else>
+          <span class="message break">{{ chatPreview.text.substring(0,8)+".." }}</span>
+        </span>
+        <span class="time break">{{ chatPreview.time }}</span>
+      </div>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      photosURL: process.env.VUE_APP_IMAGES_URL
+    }
+  },
+
   props: ["chatsPreview", "chatId"],
 
   computed: {
@@ -32,6 +53,12 @@ export default {
       });
     },
   },
+
+  methods: {
+    getChatMessages(senderId) {
+      this.$emit('getChatMessages', senderId)
+    }
+  }
 };
 </script>
 
@@ -42,7 +69,7 @@ export default {
   margin-left: 0;
   width: 20%;
   position: relative;
-  height: 800px;
+  height: 85vh;
   overflow: auto;
 }
 
@@ -101,6 +128,7 @@ img {
     display: none;
   }
   .chat-preview-container {
+    float: left;
     margin-right: 3px;
     margin-left: 3px;
     width: 57px;
@@ -108,7 +136,7 @@ img {
     display:flex;
   }
   .chats-container {
-    width: 63px;
+    width: 80px;
   }
 }
 

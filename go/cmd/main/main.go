@@ -9,5 +9,5 @@ import (
 func main() {
 	e := router.New()
 
-	e.Start(os.Getenv("SERVER_PORT"))
+	e.Logger.Fatal(e.Start(os.Getenv("SERVER_PORT")))
 }

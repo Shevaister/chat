@@ -1,80 +1,80 @@
 <template>
     <div>
         <Header/>
-        <div class="input-group container">
-            <input :value = "login" @input = "login = $event.target.value" type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-            <button @click = "FindUser" type="button" class="btn btn-outline-primary">search</button>
+        <div class = "container">
+            <UserSearch @findUser = "findUser"/>
+            <UserList :users = "users" :completed = "completed" @addUser = "addUser" @blockUser = "blockUser" @openChat = "openChat"/>
         </div>
-        <div v-if = "completed === 1" class = "user-container">
-            <img  src = "@/1.png" alt = "img">
-            <p :user = "user"> {{user.login}} </p>
-            <button @click = "AddUser" type="button" class="btn btn-success user-container-btn">Add</button>
-            <button type="button" class="btn btn-primary user-container-btn">Open chat</button>
-            <button @click = "BlockUser" type="button" class="btn btn-danger user-container-btn">Block</button>
-        </div>
-        <div v-if = "completed === 0" class = "none">
-            <span> No users found </span>
-        </div>
+        
     </div>
 </template>
 
 <script>
+import {jwtCheck} from '@/utils/jwtCheck'
+import UserList from '@/components/findUser/UserList'
+import UserSearch from '@/components/findUser/UserSearch'
 import Header from '@/components/Header'
 import axios from 'axios';
 export default {
     components: {
-        Header
-    },
-
-    beforeMount() {
-        if (localStorage.getItem('jwt') == undefined) {
-            router.push('/') 
-        }
+        Header,
+        UserList,
+        UserSearch,
     },
 
     data() {
         return {
             completed: -1,
             login: '',
-            user: {id : '',login: '',},
-            jwt: localStorage.getItem('jwt'),
+            users: [],
+            jwt: null,
+        }
+    },
+
+    created() {
+        let jwt = jwtCheck(localStorage.getItem('jwt'))
+        if (!jwt) {
+            this.$router.push('/')
+        } else {
+            this.jwt = jwt
         }
     },
 
     methods: {
-        async FindUser() {
+        jwtCheck,
+        async findUser(login) {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:8000/a/find',
+                url: process.env.VUE_APP_API_URL + "/a" + "/find",
                 headers: {
                     Authorization: 'Bearer' + ' ' + this.jwt,
                 },
                 data: {
-                    login: this.login,
+                    login: login,
                 }
             })
             .catch(function () {})
 
-            if (response != undefined) {
+            if (response.data.length != 0) {
                 this.completed = 1
-                this.user.login = response.data.login
-                this.user.id = response.data.id
+                this.users = response.data
             } else {
                 this.completed = 0
+                this.users = response.data
             }
 
 
         },
 
-        async AddUser() {
+        async addUser(id) {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:8000/a/add',
+                url: process.env.VUE_APP_API_URL + "/a" + "/add",
                 headers: {
                     Authorization: 'Bearer' + ' ' + this.jwt,
                 },
                 data: {
-                    user2Id: this.user.id,
+                    user2Id: id,
                 }
             })
             .catch(function (error) {
@@ -88,15 +88,15 @@ export default {
             }
         },
 
-        async BlockUser() {
+        async blockUser(id) {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:8000/a/block',
+                url: process.env.VUE_APP_API_URL + "/a" + "/block",
                 headers: {
                     Authorization: 'Bearer' + ' ' + this.jwt,
                 },
                 data: {
-                    user2Id: this.user.id,
+                    user2Id: id,
                 }
             })
             .catch(function (error) {
@@ -110,44 +110,17 @@ export default {
             }
         },
 
+        openChat(id) {
+            this.$router.push("/chat/?id=" + id)
+        }
+
 
     }
 }
 </script>
 
 <style scoped>
-.none {
-    margin-top: 5%;
-    text-align: center;
-}
-
 .container {
-    margin-top: 5%;
-    width: 90%;
-}
-
-.user-container {
-    margin-top: 5%;
-    margin-left: 10%;
-    width: 80%;
-    border-radius: 5px;
-    padding-top: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 40px;
-    background: lightgray;
-}
-
-.user-container-btn {
-    margin-right: 5px;
-    float:right;
-}
-
-img {
-  float: left;
-  max-width: 60px;
-  width: 100%;
-  margin-right: 20px;
-  border-radius: 50%;
+  width: 90%;
 }
 </style>

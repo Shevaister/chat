@@ -1,9 +1,9 @@
 <template>
     <div class="send-container"> 
-      <form>
+      <form @submit.prevent>
         <input
-          :value="text"
-          @input="text = $event.target.value"
+          v-model="text"
+          @keyup.enter="send"
           class="send-text"
           type="text"
         />
@@ -27,7 +27,7 @@ export default {
 
     methods: {
         send() {
-            this.$parent.send(this.text)
+            this.$emit('send', this.text)
             this.text = ""
         }
     }

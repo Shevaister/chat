@@ -3,8 +3,7 @@
         <div class="form-group">
             <label for="exampleInputEmail1">Change login</label>
             <input
-                :value = "login"
-                @input = "login = $event.target.value"   
+                v-model="login"   
                 type="text" 
                 class="form-control" 
                 id="exampleInputEmail1" 
@@ -30,10 +29,14 @@ export default {
     },
 
     methods: {
+        
         async ChangeLogin() {
+            if (this.login.length < 8) {
+                alert("login must contain at least 8 characters")
+            } else {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:8000/a/changelogin',
+                url: process.env.VUE_APP_API_URL + "/a" + "/changelogin",
                 headers: {
                     Authorization: 'Bearer' + ' ' + this.jwt,
                 },
@@ -49,7 +52,7 @@ export default {
             if (response != undefined) {
                 this.login = ''
                 alert("success")
-            } 
+            } }
         },
 
     }

@@ -1,10 +1,15 @@
 <template>
   <div>
-    <div class="chatbox">
+    <div class="chatbox" ref = "scroll">
       <div v-for="message in chat" :key="message.messageId">
         <MessageFormFrom v-if="message.SenderID === chatWith.id">
           <template v-slot:image>
-            <img class="right" src="@/1.png" alt="" />
+            <div v-if="chatWith.avatar != ''">
+              <img  :src= "photosURL + chatWith.avatar" />
+            </div>
+            <div v-else>
+              <img  src= "@/assets/default.png" />
+            </div>
           </template>
           <template v-slot:message>
             {{ message.Text }}
@@ -15,7 +20,12 @@
         </MessageFormFrom>
         <MessageFormTo v-else>
           <template v-slot:image>
-            <img src="@/1.png" alt="" />
+            <div v-if="avatar != ''">
+              <img class="right" :src= "photosURL + avatar" />
+            </div>
+            <div v-else>
+              <img class="right" src= "@/assets/default.png" />
+            </div>
           </template>
           <template v-slot:message>
             {{ message.Text }}
@@ -33,6 +43,13 @@
 import MessageFormTo from "@/components/chat/MessageFormTo";
 import MessageFormFrom from "@/components/chat/MessageFormFrom";
 export default {
+  data() {
+    return {
+      photosURL: process.env.VUE_APP_IMAGES_URL,
+      avatar: localStorage.getItem("avatar"),
+    }
+  },
+
   props: ["chat", "chatWith"],
 
   components: {
@@ -53,7 +70,7 @@ export default {
 
   methods: {
     scrollDown() {
-      var messageBody = document.querySelector(".chatbox");
+      var messageBody = this.$refs.scroll;
       messageBody.scrollTop =
         messageBody.scrollHeight - messageBody.clientHeight;
     },
@@ -67,7 +84,7 @@ export default {
   display: block;
   position: relative;
   width: auto;
-  height: 75vh;
+  height: 85vh;
   
   overflow: auto;
 }
