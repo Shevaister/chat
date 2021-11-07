@@ -51,11 +51,6 @@ services:
   frontend:
     image: frontend
     container_name: frontend
-    environment:
-      PORT: 8000
-      VUE_APP_API_URL: http://localhost:8082/api
-      VUE_APP_WEBSOCKET: ws://localhost:8082/api/ws
-      VUE_APP_IMAGES_URL: http://localhost:8082/images/
     ports:
       - "8000"
 

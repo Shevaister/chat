@@ -17,7 +17,7 @@ vue: "npm run serve"
 
 Start project:
 
-You should delete all .env files except docker-compose.yml' .env file and delete go config loader "go/config" and delete its import in main.go. 
+You should delete all .env files except docker-compose.yml' and vue' .env files and delete go config loader "go/config" and delete its import in main.go. 
 
 To start project as docker network u need to build all images:
 nginx: "docker build -t nginx ."

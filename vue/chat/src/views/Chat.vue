@@ -64,7 +64,6 @@ export default {
         alert("error");
       }
     });
-    console.log(response)
     for (let i = 0; i < response.data.length; i++) {
       var rawTime = new Date(response.data[i].time);
       var time = rawTime.toLocaleString();
@@ -124,7 +123,6 @@ export default {
         var time = rawTime.toLocaleString();
         response.data.chat[i].CreatedAt = time;
       }
-      console.log(response)
       this.chat = response.data.chat;
       this.chatWith = response.data.user;
       this.currentChatId = response.data.chatId;
@@ -149,7 +147,6 @@ export default {
     },
 
     readWsMessage(data) {
-      console.log(data)
       if (data.text == "pong" || data.code == 1) {
         this.ping();
       } else if (data.code == 0) {
